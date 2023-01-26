@@ -3,6 +3,8 @@
 This utility is a simple python script to attach a few components of the 
 Mediola AIO gateway to HomeAssistant or other MQTT capable hosts.
 
+## MP took a fork on 26/01/2023 to try to get it to work with Internorm blinds.
+
 ## Supported gateways
 
   * Mediola AIO gateway v4/v4+

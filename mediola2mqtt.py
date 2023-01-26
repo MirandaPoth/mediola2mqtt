@@ -68,6 +68,9 @@ def on_message(client, obj, msg):
                     data = "20" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "01"
+                # MP 26/01/23!
+                elif dtype == 'IN':
+                    data = format(int(adr), "02x") + "000C"
                 else:
                     return
             elif msg.payload == b'close':
@@ -75,6 +78,9 @@ def on_message(client, obj, msg):
                     data = "40" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "00"
+                # MP 26/01/23 
+                elif dtype == 'IN':
+                    data = format(int(adr), "02x") + "000D"
                 else:
                     return
             elif msg.payload == b'stop':
@@ -82,6 +88,7 @@ def on_message(client, obj, msg):
                     data = "10" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "02"
+                # MP 26/01/23 TODO: fill in the stop command
                 else:
                     return
             else:
@@ -196,6 +203,7 @@ def setup_discovery():
                 "name" : "Mediola Blind",
               },
             }
+            # MP 26/01/23 TODO: See if I can implement this too
             if config['blinds'][ii]['type'] == 'ER':
                 payload["state_topic"] = topic + "/state"
             payload = json.dumps(payload)
@@ -225,6 +233,7 @@ def handle_blind(packet_type, address, state, mediolaid):
     payload = False
 
     for ii in range(0, len(config['blinds'])):
+        # MP 26/01/23 TODO: See if I can implement this too
         if packet_type == 'ER' and packet_type == config['blinds'][ii]['type']:
             if address == config['blinds'][ii]['adr'].lower():
                 if isinstance(config['mediola'], list):
