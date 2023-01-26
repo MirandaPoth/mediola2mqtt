@@ -14,7 +14,7 @@ import requests
 print('Miranda was here')
 
 if os.path.exists('/data/options.json'):
-    print('Running in hass.io add-on mode')
+    print('Running in hass.io add-on mode.')
     fp = open('/data/options.json', 'r')
     config = json.load(fp)
     fp.close()
