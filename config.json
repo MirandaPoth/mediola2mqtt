@@ -1,6 +1,6 @@
 {
     "name": "Mediola to MQTT",
-    "version": "0.3",
+    "version": "0.4",
     "slug": "mediola2mqtt",
     "init": false,
     "description": "Homeassistant interface to Mediola AIO Gateway v4/v4+",
@@ -45,7 +45,7 @@
       },
       "blinds": [
         {
-        "type": "match(ER|RT)?",
+        "type": "match(ER|RT|IN)?",
         "adr": "str?",
         "name": "str?"
         }
