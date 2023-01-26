@@ -11,7 +11,7 @@ import os
 import sys
 import requests
 
-print('Miranda was here')
+print('Miranda was here 26/01/2023 16:08')
 
 if os.path.exists('/data/options.json'):
     print('Running in hass.io add-on mode ...')
