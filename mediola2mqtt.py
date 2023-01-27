@@ -11,7 +11,7 @@ import os
 import sys
 import requests
 
-print('Miranda was here 26/01/2023 16:08')
+print('Miranda was here 27/01/2023 12:43')
 
 if os.path.exists('/data/options.json'):
     print('Running in hass.io add-on mode ...')
@@ -59,6 +59,9 @@ def on_message(client, obj, msg):
     dtype, adr = msg.topic.split("_")
     mediolaid = dtype.split("/")[-2]
     dtype = dtype[dtype.rfind("/")+1:]
+
+    print("dtype is " + dtype)
+
     adr = adr[:adr.find("/")]
     for ii in range(0, len(config['blinds'])):
         if dtype == config['blinds'][ii]['type'] and adr == config['blinds'][ii]['adr']:
