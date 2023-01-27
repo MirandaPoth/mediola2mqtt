@@ -83,7 +83,7 @@ def on_message(client, obj, msg):
                     data = "40" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "00"
-                # MP 26/01/23 
+                # MP 26/01/23
                 elif dtype == 'IN':
                     data = format(int(adr), "02x") + "000D"
                 else:
@@ -329,7 +329,7 @@ mqttc.on_message = on_message
 
 if config['mqtt']['debug']:
     print("Debugging messages enabled")
-    mqttc.on_log = on_log    
+    mqttc.on_log = on_log
     mqttc.on_publish = on_publish
 
 if config['mqtt']['username'] and config['mqtt']['password']:
