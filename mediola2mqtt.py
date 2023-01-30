@@ -11,7 +11,7 @@ import os
 import sys
 import requests
 
-print('Miranda was here 27/01/2023 12:43')
+print('Miranda was here 30/01/2023 11:46')
 
 if os.path.exists('/data/options.json'):
     print('Running in hass.io add-on mode ...')
@@ -73,7 +73,7 @@ def on_message(client, obj, msg):
                     data = "20" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "01"
-                # MP 26/01/23!
+                # MP 26/01/23! IT WORKS!!
                 elif dtype == 'IN':
                     data = format(int(adr), "02x") + "000C"
                 else:
@@ -93,7 +93,9 @@ def on_message(client, obj, msg):
                     data = "10" + adr
                 elif dtype == 'ER':
                     data = format(int(adr), "02x") + "02"
-                # MP 26/01/23 TODO: fill in the stop command
+                # MP 30/01/23
+                elif dtype == 'IN':
+                    data = format(int(adr), "02x") + "0007"
                 else:
                     return
             else:
@@ -208,8 +210,10 @@ def setup_discovery():
                 "name" : "Mediola Blind",
               },
             }
-            # MP 26/01/23 TODO: See if I can implement this too
             if config['blinds'][ii]['type'] == 'ER':
+                payload["state_topic"] = topic + "/state"
+            # MP 30/01/23 See if I can implement this too???
+            if config['blinds'][ii]['type'] == 'IN':
                 payload["state_topic"] = topic + "/state"
             payload = json.dumps(payload)
             mqttc.subscribe(topic + "/set")
@@ -334,11 +338,11 @@ if config['mqtt']['debug']:
 
 if config['mqtt']['username'] and config['mqtt']['password']:
     mqttc.username_pw_set(config['mqtt']['username'], config['mqtt']['password'])
-try:
-    mqttc.connect(config['mqtt']['host'], config['mqtt']['port'], 60)
-except:
-    print('Error connecting to MQTT, will now quit.')
-    sys.exit(1)
+    try:
+        mqttc.connect(config['mqtt']['host'], config['mqtt']['port'], 60)
+    except:
+        print('Error connecting to MQTT, will now quit. Return code is ' + rc)
+        sys.exit(1)
 mqttc.loop_start()
 
 listen_port = 1902
