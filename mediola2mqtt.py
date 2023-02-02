@@ -11,7 +11,7 @@ import os
 import sys
 import requests
 
-print('Miranda was here 30/01/2023 11:46')
+print('Miranda was here 02/02/2023 09:43')
 
 if os.path.exists('/data/options.json'):
     print('Running in hass.io add-on mode ...')
@@ -60,9 +60,14 @@ def on_message(client, obj, msg):
     mediolaid = dtype.split("/")[-2]
     dtype = dtype[dtype.rfind("/")+1:]
 
-    print("dtype is " + dtype)
+    # MP debugging
+    print("dtype: " + dtype + " adr: " + adr)
 
     adr = adr[:adr.find("/")]
+
+    # MP debugging
+    print("adr: " + adr)
+
     for ii in range(0, len(config['blinds'])):
         if dtype == config['blinds'][ii]['type'] and adr == config['blinds'][ii]['adr']:
             if isinstance(config['mediola'], list):
@@ -75,7 +80,8 @@ def on_message(client, obj, msg):
                     data = format(int(adr), "02x") + "01"
                 # MP 26/01/23! IT WORKS!!
                 elif dtype == 'IN':
-                    data = format(int(adr), "02x") + "000C"
+                    # For Internorm blinds the translation to hex isn't necessary
+                    data = adr + "000C"
                 else:
                     return
             elif msg.payload == b'close':
@@ -85,7 +91,8 @@ def on_message(client, obj, msg):
                     data = format(int(adr), "02x") + "00"
                 # MP 26/01/23
                 elif dtype == 'IN':
-                    data = format(int(adr), "02x") + "000D"
+                    # For Internorm blinds the translation to hex isn't necessary
+                    data = adr + "000D"
                 else:
                     return
             elif msg.payload == b'stop':
@@ -95,7 +102,8 @@ def on_message(client, obj, msg):
                     data = format(int(adr), "02x") + "02"
                 # MP 30/01/23
                 elif dtype == 'IN':
-                    data = format(int(adr), "02x") + "0007"
+                    # For Internorm blinds the translation to hex isn't necessary
+                    data = adr + "0007"
                 else:
                     return
             else:
@@ -106,6 +114,10 @@ def on_message(client, obj, msg):
               "type" : dtype,
               "data" : data
             }
+
+            # MP debugging
+            print("data: " + data)
+
             host = ''
             if isinstance(config['mediola'], list):
                 mediolaid = config['blinds'][ii]['mediola']
@@ -122,6 +134,11 @@ def on_message(client, obj, msg):
                 print('Error: Could not find matching Mediola!')
                 return
             url = 'http://' + host + '/command'
+
+            # MP debugging
+            print("payload is: ...")
+            print(payload)
+
             response = requests.get(url, params=payload, headers={'Connection':'close'})
 
 def on_publish(client, obj, mid):
@@ -274,6 +291,9 @@ def get_mediolaid_by_address(addr):
         if addr[0] == ipaddr:
             mediolaid = config['mediola'][ii]['id']
 
+    # MP 2/2/2023 debugging
+    print("mediolaid is " + mediolaid)
+
     return mediolaid
 
 def handle_packet_v4(data, addr):
@@ -293,6 +313,12 @@ def handle_packet_v4(data, addr):
                          format(int(data_dict['data'][0:2].lower(), 16), '02d'),
                          data_dict['data'][-2:].lower(),
                          mediolaid)
+
+    # MP 2/2/2023 debugging
+    print("handle_packet_v4: " + data + "addr: " + addr)
+    print("topic is: " + topic)
+    print("payload is: " + payload)
+    print("retain is: " + retain)
 
     if topic and payload:
         mqttc.publish(topic, payload=payload, retain=retain)
@@ -316,6 +342,12 @@ def handle_packet_v6(data, addr):
                          format(int(address, 16), '02d'),
                          state,
                          mediolaid)
+
+    # MP 2/2/2023 debugging
+    print("handle_packet_v6: " + data + "addr: " + addr)
+    print("topic is: " + topic)
+    print("payload is: " + payload)
+    print("retain is: " + retain)
 
     if topic and payload:
         mqttc.publish(topic, payload=payload, retain=retain)
